@@ -1,6 +1,6 @@
 import React from "react";
 
-const AvailableChats = () => {
+const AvailableChatsList = () => {
   return (
     <div className="container-fluid">
       <div className="row mt-3">
@@ -58,4 +58,4 @@ const AvailableChats = () => {
   );
 };
 
-export default AvailableChats;
+export default AvailableChatsList;

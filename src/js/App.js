@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Settings from "./views/Settings";
 import Login from "./views/Login";
 import Register from "./views/Register";
+import Chat from "./views/Chat";
 
 export default function App() {
   return (
@@ -13,6 +14,12 @@ export default function App() {
       <Navbar />
       <div className="content-wrapper">
         <Switch>
+          <Route path="/" exact>
+            <Home />
+          </Route>
+          <Route path="/chat/:id">
+            <Chat />
+          </Route>
           <Route path="/settings">
             <Settings />
           </Route>
@@ -21,9 +28,6 @@ export default function App() {
           </Route>
           <Route path="/register">
             <Register />
-          </Route>
-          <Route path="/">
-            <Home />
           </Route>
         </Switch>
       </div>
