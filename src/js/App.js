@@ -5,8 +5,7 @@ import { Provider } from "react-redux";
 import Home from "./views/Home";
 import Navbar from "./components/Navbar";
 import Settings from "./views/Settings";
-import Login from "./views/Login";
-import Register from "./views/Register";
+import Welcome from "./views/Welcome";
 import Chat from "./views/Chat";
 import configureStore from "./store";
 
@@ -19,6 +18,9 @@ export default function App() {
         <div className="content-wrapper">
           <Switch>
             <Route path="/" exact>
+              <Welcome />
+            </Route>
+            <Route path="/home">
               <Home />
             </Route>
             <Route path="/chat/:id">
@@ -26,12 +28,6 @@ export default function App() {
             </Route>
             <Route path="/settings">
               <Settings />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/register">
-              <Register />
             </Route>
           </Switch>
         </div>
