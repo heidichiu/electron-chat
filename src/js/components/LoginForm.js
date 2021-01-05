@@ -1,12 +1,17 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../actions/auth";
 
 const LoginForm = () => {
   const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const error = useSelector(({ auth }) => auth.login.error);
 
   const onSubmit = (data) => {
-    alert(JSON.stringify(data));
+    dispatch(loginUser(data));
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="centered-container-form">
       <div className="header">Welcome here!</div>
@@ -36,7 +41,9 @@ const LoginForm = () => {
             id="password"
           />
         </div>
-        {false && <div className="alert alert-danger small">Some error</div>}
+        {error && (
+          <div className="alert alert-danger small">{error.message}</div>
+        )}
         <button type="submit" className="btn btn-outline-primary">
           Login
         </button>

@@ -23,3 +23,18 @@ export async function register({ email, password, username, avatar }) {
     return Promise.reject(error.message);
   }
 }
+
+export const onAuthStateChange = (onAuth) =>
+  firebase.auth().onAuthStateChanged(onAuth);
+
+export const logout = () => firebase.auth().signOut();
+
+export const login = ({ email, password }) =>
+  firebase.auth().signInWithEmailAndPassword(email, password);
+
+export const getUserProfile = (uid) =>
+  db
+    .collection("profiles")
+    .doc(uid)
+    .get()
+    .then((snapshot) => snapshot.data());
