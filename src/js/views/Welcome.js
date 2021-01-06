@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
+import BaseLayout from "../layouts/Base";
 
 const Welcome = () => {
   const [isLogin, setIsLogin] = useState(true);

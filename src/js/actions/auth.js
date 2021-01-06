@@ -5,7 +5,6 @@ export const registerUser = (formData) => (dispatch) => {
   return api
     .register(formData)
     .then((user) => {
-      dispatch({ type: "AUTH_REGISTER_SUCCESS", user: {} });
       return user;
     })
     .catch((error) => dispatch({ type: "AUTH_REGISTER_ERROR", error }));
@@ -13,12 +12,9 @@ export const registerUser = (formData) => (dispatch) => {
 
 export const loginUser = (formData) => (dispatch) => {
   dispatch({ type: "AUTH_LOGIN_INIT" });
-  return api
-    .login(formData)
-    .then((_) => dispatch({ type: "AUTH_LOGIN_SUCCESS", user: {} }))
-    .catch((error) => {
-      dispatch({ type: "AUTH_LOGIN_ERROR", error });
-    });
+  return api.login(formData).catch((error) => {
+    dispatch({ type: "AUTH_LOGIN_ERROR", error });
+  });
 };
 
 export const logout = () => (dispatch) =>
