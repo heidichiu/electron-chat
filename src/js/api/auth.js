@@ -18,7 +18,7 @@ export async function register({ email, password, username, avatar }) {
       joinedChats: [],
     };
     await createUserProfile(userProfile);
-    return user;
+    return userProfile;
   } catch (erro) {
     return Promise.reject(error.message);
   }
@@ -29,8 +29,13 @@ export const onAuthStateChange = (onAuth) =>
 
 export const logout = () => firebase.auth().signOut();
 
-export const login = ({ email, password }) =>
-  firebase.auth().signInWithEmailAndPassword(email, password);
+export const login = async ({ email, password }) => {
+  const { user } = await firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password);
+  const userProfile = await getUserProfile(user.uid);
+  return userProfile;
+};
 
 export const getUserProfile = (uid) =>
   db
