@@ -47,3 +47,10 @@ export const sendChatMessage = (message, chatId) =>
     .collection("messages")
     .doc(message.timestamp)
     .set(message);
+
+export const subscribeToMessages = (chatId, onSubsribe) =>
+  db
+    .collection("chats")
+    .doc(chatId)
+    .collection("messages")
+    .onSnapshot((snapshot) => onSubsribe(snapshot.docChanges()));
