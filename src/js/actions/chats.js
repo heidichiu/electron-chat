@@ -43,7 +43,7 @@ export const joinChat = (chat, uid) => (dispatch) =>
   });
 
 export const subscribeToChat = (chatId) => (dispatch) => {
-  api.subscribeToChat(chatId, async (chat) => {
+  return api.subscribeToChat(chatId, async (chat) => {
     const joinedUsers = await Promise.all(
       chat.joinedUsers.map(async (userRef) => {
         const userSnapshot = await userRef.get();
@@ -57,7 +57,18 @@ export const subscribeToChat = (chatId) => (dispatch) => {
 };
 
 export const subscribeToProfile = (uid, chatId) => (dispatch) => {
-  api.subscribeToChat(uid, (user) => {
+  return api.subscribeToChat(uid, (user) => {
     dispatch({ type: "CHATS_UPDATE_USER_STATE", user, chatId });
   });
+};
+
+export const sendChatMessage = (message, chatId) => (dispatch, getState) => {
+  const newMessage = { ...message };
+  const { user } = getState().auth;
+  const userRef = db.doc(`profiles/${user.uid}`);
+  newMessage.author = userRef;
+
+  return api
+    .sendChatMessage(newMessage, chatId)
+    .then((_) => dispatch({ type: "CHATS_MESSAGE_SENT" }));
 };

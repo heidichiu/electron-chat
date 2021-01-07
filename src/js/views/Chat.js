@@ -1,9 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { subscribeToChat, subscribeToProfile } from "../actions/chats";
+import {
+  sendChatMessage,
+  subscribeToChat,
+  subscribeToProfile,
+} from "../actions/chats";
 import ChatMessagesList from "../components/ChatMessagesList";
 import ChatUsersList from "../components/ChatUsersList";
+import Messenger from "../components/Messenger";
+import LoadingView from "../components/shared/LoadingView";
 import ViewTitle from "../components/shared/ViewTitle";
 import { withBaseLayout } from "../layouts/Base";
 
@@ -17,7 +23,7 @@ const Chat = () => {
   useEffect(() => {
     const unsubFromChat = dispatch(subscribeToChat(id));
     return () => {
-      ubsubFromChat();
+      unsubFromChat();
       unSubFromJoinedUsers();
     };
   }, []);
@@ -26,21 +32,35 @@ const Chat = () => {
     joinedUsers && subscribeToJoinedUsers(joinedUsers);
   }, [joinedUsers]);
 
-  const subscribeToJoinedUsers = (jUsers) => {
-    jUsers.forEach((user) => {
-      if (!peopleWatchers.current[user.uid]) {
-        peopleWatchers.current[user.uid] = dispatch(
-          subscribeToProfile(user.uid, id)
-        );
-      }
-    });
-  };
+  const sendMessage = useCallback(
+    (message) => {
+      dispatch(sendChatMessage(message, id));
+    },
+    [id]
+  );
 
-  const unSubFromJoinedUsers = () => {
+  const subscribeToJoinedUsers = useCallback(
+    (jUsers) => {
+      jUsers.forEach((user) => {
+        if (!peopleWatchers.current[user.uid]) {
+          peopleWatchers.current[user.uid] = dispatch(
+            subscribeToProfile(user.uid, id)
+          );
+        }
+      });
+    },
+    [dispatch, id]
+  );
+
+  const unSubFromJoinedUsers = useCallback(() => {
     Object.keys(peopleWatchers.current).forEach((id) =>
       peopleWatchers.current[id]()
     );
-  };
+  }, [peopleWatchers.current]);
+
+  if (!activeChat?.id) {
+    return <LoadingView message="Loading chat..." />;
+  }
 
   return (
     <div className="row no-gutters fh">
@@ -50,6 +70,7 @@ const Chat = () => {
       <div className="col-9 fh">
         <ViewTitle text={`Channel: ${activeChat?.name}`} />
         <ChatMessagesList />
+        <Messenger onSubmit={sendMessage} />
       </div>
     </div>
   );

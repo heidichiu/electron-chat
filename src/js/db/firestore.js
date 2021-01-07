@@ -13,3 +13,5 @@ const config = {
 };
 // Initialize Firebase
 export default firebase.initializeApp(config).firestore();
+
+export const { Timestamp } = firebase.firestore;
