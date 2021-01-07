@@ -31,5 +31,5 @@ export const subscribeToChat = (chatId, onSubscribe) =>
     .doc(chatId)
     .onSnapshot((snapshot) => {
       const chat = { id: snapshot.id, ...snapshot.data() };
-      onSubscribe();
+      onSubscribe(chat);
     });

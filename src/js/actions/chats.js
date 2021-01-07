@@ -43,7 +43,15 @@ export const joinChat = (chat, uid) => (dispatch) =>
   });
 
 export const subscribeToChat = (chatId) => (dispatch) => {
-  api.subscribeToChat(chatId, (chat) => {
+  api.subscribeToChat(chatId, async (chat) => {
+    const joinedUsers = await Promise.all(
+      chat.joinedUsers.map(async (userRef) => {
+        const userSnapshot = await userRef.get();
+        return userSnapshot.data();
+      })
+    );
+    chat.joinedUsers = joinedUsers;
+
     dispatch({ type: "CHATS_SET_ACTIVE_CHAT", chat });
   });
 };
