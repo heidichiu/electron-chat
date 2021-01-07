@@ -36,3 +36,8 @@ export const createChat = (formData, userId) => async (dispatch) => {
   dispatch({ type: "CHATS_JOIN_SUCCESS", chat: { ...newChat, id: chatId } });
   return chatId;
 };
+
+export const joinChat = (chat, uid) => (dispatch) =>
+  api.joinChat(uid, chat.id).then((_) => {
+    dispatch({ type: "CHATS_JOIN_SUCCESS", chat });
+  });
