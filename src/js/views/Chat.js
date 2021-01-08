@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
+  registerMessageSubscription,
   sendChatMessage,
   subscribeToChat,
   subscribeToMessages,
@@ -17,14 +18,22 @@ import { withBaseLayout } from "../layouts/Base";
 const Chat = () => {
   const dispatch = useDispatch();
   const peopleWatchers = useRef({});
+  const messageList = useRef();
   const { id } = useParams();
   const activeChat = useSelector(({ chats }) => chats.activeChats[id]);
   const messages = useSelector(({ chats }) => chats.messages[id]);
+  const messagesSub = useSelector(({ chats }) => chats.messagesSub[id]);
+
   const joinedUsers = activeChat?.joinedUsers;
 
   useEffect(() => {
     const unsubFromChat = dispatch(subscribeToChat(id));
-    dispatch(subscribeToMessages(id));
+
+    if (!messagesSub) {
+      const unsubFromMessages = dispatch(subscribeToMessages(id));
+      dispatch(registerMessageSubscription(id, unsubFromMessages));
+    }
+
     return () => {
       unsubFromChat();
       unSubFromJoinedUsers();
@@ -34,6 +43,15 @@ const Chat = () => {
   useEffect(() => {
     joinedUsers && subscribeToJoinedUsers(joinedUsers);
   }, [joinedUsers]);
+
+  useEffect(() => {
+    if (messageList.current)
+      messageList.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "end",
+      });
+  }, [messages]);
 
   const sendMessage = useCallback(
     (message) => {
@@ -72,7 +90,7 @@ const Chat = () => {
       </div>
       <div className="col-9 fh">
         <ViewTitle text={`Channel: ${activeChat?.name}`} />
-        <ChatMessagesList messages={messages} />
+        <ChatMessagesList innerRef={messageList} messages={messages} />
         <Messenger onSubmit={sendMessage} />
       </div>
     </div>
