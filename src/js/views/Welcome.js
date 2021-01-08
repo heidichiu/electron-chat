@@ -8,6 +8,7 @@ import BaseLayout from "../layouts/Base";
 const Welcome = () => {
   const [isLogin, setIsLogin] = useState(true);
   const user = useSelector(({ auth }) => auth.user);
+
   const optInText = isLogin
     ? ["Need an account?", "Register"]
     : ["Already register?", "Login"];
