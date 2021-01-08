@@ -1,4 +1,5 @@
 import Notification from "../../utils/notifications";
+import Storage from "../../utils/storage";
 
 const appMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
@@ -8,6 +9,14 @@ const appMiddleware = (store) => (next) => (action) => {
         title: "Connection Status",
         body: action.isOnline ? "Online" : "Offline",
       });
+    case "SETTINGS_UPDATE": {
+      const { setting, value } = action;
+      const currentSettings = Storage.getItem("app-settings");
+
+      const settings = { ...currentSettings, [setting]: value };
+
+      Storage.setItem("app-settings", settings);
+    }
     case "AUTH_LOGOUT_SUCCESS": {
       const { messagesSubs } = store.getState().chats;
       if (messagesSubs) {

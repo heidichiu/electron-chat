@@ -17,6 +17,7 @@ import LoadingView from "./components/shared/LoadingView";
 import { listenToConnectionChanges } from "./actions/app";
 import ChatCreate from "./views/ChatCreate";
 import { checkUserConnection } from "./actions/connection";
+import { loadInitialSettings } from "./actions/settings";
 
 const AuthRoute = ({ children, ...rest }) => {
   const user = useSelector(({ auth }) => auth.user);
@@ -35,9 +36,14 @@ const AuthRoute = ({ children, ...rest }) => {
   );
 };
 
-const ContentWrapper = ({ children }) => (
-  <div className="content-wrapper">{children}</div>
-);
+const ContentWrapper = ({ children }) => {
+  const isDarkTheme = useSelector(({ settings }) => settings.isDarkTheme);
+  return (
+    <div className={`content-wrapper ${isDarkTheme ? "dark" : "light"}`}>
+      {children}
+    </div>
+  );
+};
 
 const ChatApp = () => {
   const dispatch = useDispatch();
@@ -46,6 +52,7 @@ const ChatApp = () => {
   const user = useSelector(({ auth }) => auth.user);
 
   useEffect(() => {
+    dispatch(loadInitialSettings());
     const unsubFromAuth = dispatch(listenToAuthChanges());
     const unsubFromConnection = dispatch(listenToConnectionChanges());
 
